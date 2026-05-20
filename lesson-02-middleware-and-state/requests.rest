@@ -1,0 +1,26 @@
+### Get Product Info
+GET http://localhost:3000/product
+
+### Buy Product - Success Case
+POST http://localhost:3000/buy
+Content-Type: application/json
+
+{
+  "quantity": 2
+}
+
+### Buy Product - Invalid Quantity
+POST http://localhost:3000/buy
+Content-Type: application/json
+
+{
+  "quantity": 0
+}
+
+### Buy Product - Not Enough Stock
+POST http://localhost:3000/buy
+Content-Type: application/json
+
+{
+  "quantity": 100
+}
