@@ -1,66 +1,20 @@
-const {
-  getProductService: getProductsService,
-  buyProductService,
-  restockProductService,
-} = require("./roles.service");
+const { listRolesService, getRoleService } = require("./roles.service");
 
-function mapErrorToStatus(error) {
-  const message = error?.message || "Error";
-  if (message === "Quantity must be greater than 0") return 400;
-  if (message === "Invalid restock amount") return 400;
-  if (message === "Not enough stock") return 400;
-  if (message === "Too many requests") return 409;
-  return 500;
+async function listRolesController(req, res) {
+  const roles = await listRolesService();
+  return res.status(200).json({ message: "ok", data: roles });
 }
 
-async function getProductsController(req, res) {
+async function getRoleController(req, res) {
   try {
-    const products = await getProductsService(req.body);
-
-    return res.status(200).json({
-      message: "Successfully got products",
-      data: products,
-    });
+    const role = await getRoleService(req.params.id);
+    return res.status(200).json({ message: "ok", data: role });
   } catch (error) {
-    return res.status(mapErrorToStatus(error)).json({
-      message: error?.message || "Error",
-      data: [],
-    });
-  }
-}
-
-async function buyProductController(req, res) {
-  try {
-    await buyProductService(req);
-
-    return res.status(200).json({
-      message: "Successfully bought",
-    });
-  } catch (error) {
-    return res.status(mapErrorToStatus(error)).json({
-      message: error?.message || "Error",
-    });
-  }
-}
-
-async function restockProductController(req, res) {
-  try {
-    const remainingStock = await restockProductService(req);
-
-    return res.status(200).json({
-      success: true,
-      message: "Successfully restocked",
-      remainingStock: remainingStock,
-    });
-  } catch (error) {
-    return res.status(mapErrorToStatus(error)).json({
-      message: error?.message || "Error",
-    });
+    return res.status(404).json({ message: error?.message || "Error" });
   }
 }
 
 module.exports = {
-  getProductsController,
-  buyProductController,
-  restockProductController,
+  listRolesController,
+  getRoleController,
 };

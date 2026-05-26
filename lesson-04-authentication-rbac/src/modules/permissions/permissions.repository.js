@@ -1,19 +1,14 @@
-const { product } = require("../shared/db/db");
+const { permissions } = require("../shared/db/db");
 
-async function getProductRepository() {
-  return product;
+async function getAllPermissions() {
+  return permissions;
 }
 
-async function addStock(amount) {
-  product.stock += amount;
-}
-
-async function removeStock(amount) {
-  product.stock -= amount;
+async function findPermissionsByIds(ids) {
+  return permissions.filter((p) => ids.includes(p.id));
 }
 
 module.exports = {
-  getProductRepository,
-  addStock,
-  removeStock,
+  getAllPermissions,
+  findPermissionsByIds,
 };

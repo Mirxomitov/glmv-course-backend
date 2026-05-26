@@ -1,15 +1,25 @@
+require("dotenv").config();
+
 const express = require("express");
 
-const { productRouter } = require("./modules/users/product.module");
-  const {
-    jsonParser,
-    logger,
-  } = require("./modules/shared/middlewares/middleware");
+const { authRouter } = require("./modules/auth/auth.module");
+const { usersRouter } = require("./modules/users/users.module");
+const { rolesRouter } = require("./modules/roles/roles.module");
+const { permissionsRouter } = require("./modules/permissions/permissions.module");
+
+const {
+  jsonParser,
+  logger,
+} = require("./modules/shared/middlewares/middleware");
 
 const app = express();
 
 app.use(jsonParser);
 app.use(logger);
-app.use(productRouter);
+
+app.use(authRouter);
+app.use(usersRouter);
+app.use(rolesRouter);
+app.use(permissionsRouter);
 
 module.exports = app;

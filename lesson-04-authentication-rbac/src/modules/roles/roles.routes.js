@@ -1,15 +1,29 @@
 const express = require("express");
 
-const { 
-    getProductsController, 
-    buyProductController,
-    restockProductController
-} = require("./product.controller");
+const {
+  listRolesController,
+  getRoleController,
+} = require("./roles.controller");
+
+const {
+  authGuard,
+  permissionGuard,
+} = require("../shared/middlewares/middleware");
 
 const router = express.Router();
 
-router.get("/product", getProductsController);
-router.post("/buy", buyProductController);
-router.post("/restock", restockProductController);
+router.get(
+  "/roles",
+  authGuard,
+  permissionGuard("roles.read"),
+  listRolesController
+);
+
+router.get(
+  "/roles/:id",
+  authGuard,
+  permissionGuard("roles.read"),
+  getRoleController
+);
 
 module.exports = router;

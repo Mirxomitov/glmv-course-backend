@@ -1,15 +1,10 @@
 const express = require("express");
 
-const { 
-    getProductsController, 
-    buyProductController,
-    restockProductController
-} = require("./product.controller");
+const { getMeController } = require("./users.controller");
+const { authGuard } = require("../shared/middlewares/middleware");
 
 const router = express.Router();
 
-router.get("/product", getProductsController);
-router.post("/buy", buyProductController);
-router.post("/restock", restockProductController);
+router.get("/users/me", authGuard, getMeController);
 
 module.exports = router;

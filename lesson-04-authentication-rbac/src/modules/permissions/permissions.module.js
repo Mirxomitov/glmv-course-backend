@@ -1,5 +1,5 @@
-const productRouter = require("./permissions.routes");
+const permissionsRouter = require("./permissions.routes");
 
 module.exports = {
-    productRouter,
+  permissionsRouter,
 };

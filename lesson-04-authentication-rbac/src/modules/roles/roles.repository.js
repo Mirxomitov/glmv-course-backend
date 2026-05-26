@@ -1,19 +1,19 @@
-const { product } = require("../shared/db/db");
+const { roles } = require("../shared/db/db");
 
-async function getProductRepository() {
-  return product;
+async function getAllRoles() {
+  return roles;
 }
 
-async function addStock(amount) {
-  product.stock += amount;
+async function findRoleById(id) {
+  return roles.find((r) => r.id === id) || null;
 }
 
-async function removeStock(amount) {
-  product.stock -= amount;
+async function findRoleByName(name) {
+  return roles.find((r) => r.name === name) || null;
 }
 
 module.exports = {
-  getProductRepository,
-  addStock,
-  removeStock,
+  getAllRoles,
+  findRoleById,
+  findRoleByName,
 };
