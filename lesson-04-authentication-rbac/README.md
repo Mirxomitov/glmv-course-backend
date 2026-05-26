@@ -1,1 +1,1 @@
-![alt text](<images/Screenshot From 2026-05-11 20-32-38.png>) ![alt text](<images/Screenshot From 2026-05-11 20-32-48.png>) ![alt text](<images/Screenshot From 2026-05-11 20-32-56.png>) ![alt text](<images/Screenshot From 2026-05-11 20-33-05.png>) ![alt text](<images/Screenshot From 2026-05-11 20-36-33.png>) ![alt text](<images/Screenshot From 2026-05-11 20-38-56.png>)
+Role Based Access and Full Authorization flow example with error handling
