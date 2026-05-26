@@ -1,10 +1,11 @@
 const { findUserById } = require("./users.repository");
 const { findRoleById } = require("../roles/roles.repository");
 const { findPermissionsByIds } = require("../permissions/permissions.repository");
+const { HttpError } = require("../shared/errors/http-error");
 
 async function getCurrentUserService(userId) {
   const user = await findUserById(userId);
-  if (!user) throw new Error("User not found");
+  if (!user) throw HttpError.notFound("User not found");
 
   const role = await findRoleById(user.roleId);
   const permissions = role ? await findPermissionsByIds(role.permissionIds): [];

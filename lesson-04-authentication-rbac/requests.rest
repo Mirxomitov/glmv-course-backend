@@ -1,26 +1,52 @@
-### Get Product Info
-GET http://localhost:3000/product
+### 1. GET /users/me without auth header -> 401
+GET http://localhost:3000/users/me
 
-### Buy Product - Success Case
-POST http://localhost:3000/buy
+### 2. Login with empty body -> 400
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{}
+
+### 3. Login with wrong credentials -> 401
+POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-  "quantity": 2
+  "email": "nobody@x.com",
+  "password": "wrongpass"
 }
 
-### Buy Product - Invalid Quantity
-POST http://localhost:3000/restock
+### 4. Register with short password -> 400
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-  "amount": 100
+  "email": "a@b.com",
+  "password": "123"
 }
 
-### Buy Product - Not Enough Stock
-POST http://localhost:3000/buy
+### 5. Register a new user -> 201
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-  "quantity": 100
+  "email": "test1@x.com",
+  "password": "secret123"
+}
+
+### 6. Register duplicate email -> 409
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "test1@x.com",
+  "password": "secret123"
+}
+
+### 7. Refresh with invalid token -> 401
+POST http://localhost:3000/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "garbage"
 }

@@ -11,6 +11,7 @@ const {
   jsonParser,
   logger,
 } = require("./modules/shared/middlewares/middleware");
+const { errorHandler } = require("./modules/shared/errors/http-error");
 
 const app = express();
 
@@ -21,5 +22,7 @@ app.use(authRouter);
 app.use(usersRouter);
 app.use(rolesRouter);
 app.use(permissionsRouter);
+
+app.use(errorHandler);
 
 module.exports = app;

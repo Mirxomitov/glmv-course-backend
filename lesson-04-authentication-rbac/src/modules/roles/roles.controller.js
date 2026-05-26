@@ -1,16 +1,20 @@
 const { listRolesService, getRoleService } = require("./roles.service");
 
-async function listRolesController(req, res) {
-  const roles = await listRolesService();
-  return res.status(200).json({ message: "ok", data: roles });
+async function listRolesController(req, res, next) {
+  try {
+    const roles = await listRolesService();
+    return res.status(200).json({ message: "ok", data: roles });
+  } catch (error) {
+    return next(error);
+  }
 }
 
-async function getRoleController(req, res) {
+async function getRoleController(req, res, next) {
   try {
     const role = await getRoleService(req.params.id);
     return res.status(200).json({ message: "ok", data: role });
   } catch (error) {
-    return res.status(404).json({ message: error?.message || "Error" });
+    return next(error);
   }
 }
 

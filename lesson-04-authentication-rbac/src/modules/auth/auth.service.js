@@ -10,6 +10,7 @@ const {
 
 const { findRoleByName, findRoleById } = require("../roles/roles.repository");
 const { findPermissionsByIds } = require("../permissions/permissions.repository");
+const { HttpError } = require("../shared/errors/http-error");
 
 // should be in .env, add later, for now ok
 const SALT_ROUNDS = 10;
@@ -45,14 +46,14 @@ async function issueTokens(user) {
 }
 
 async function registerService({ email, password }) {
-  if (!email || !password) throw new Error("Email and password are required");
-  if (password.length < 6) throw new Error("Password too short");
+  if (!email || !password) throw HttpError.badRequest("Email and password are required");
+  if (password.length < 6) throw HttpError.badRequest("Password too short");
 
   const existing = await findUserByEmail(email);
-  if (existing) throw new Error("Email already registered");
+  if (existing) throw HttpError.conflict("Email already registered");
 
   const role = await findRoleByName("user");
-  if (!role) throw new Error("Invalid role");
+  if (!role) throw HttpError.badRequest("Invalid role");
 
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
   const user = await createUser({ email, passwordHash, roleId: role.id });
@@ -61,30 +62,30 @@ async function registerService({ email, password }) {
 }
 
 async function loginService({ email, password }) {
-  if (!email || !password) throw new Error("Email and password are required");
+  if (!email || !password) throw HttpError.badRequest("Email and password are required");
 
   const user = await findUserByEmail(email);
-  if (!user) throw new Error("Invalid credentials");
+  if (!user) throw HttpError.unauthorized("Invalid credentials");
 
   const ok = await bcrypt.compare(password, user.passwordHash);
-  if (!ok) throw new Error("Invalid credentials");
+  if (!ok) throw HttpError.unauthorized("Invalid credentials");
 
   return await issueTokens(user);
 }
 
 async function refreshService(refreshToken) {
-  if (!refreshToken) throw new Error("Refresh token required");
+  if (!refreshToken) throw HttpError.unauthorized("Refresh token required");
 
   let payload;
   try {
     payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
   } catch {
-    throw new Error("Invalid refresh token");
+    throw HttpError.unauthorized("Invalid refresh token");
   }
 
   const user = await findUserById(payload.sub);
   if (!user || user.tokenVersion !== payload.tokenVersion) {
-    throw new Error("Invalid refresh token");
+    throw HttpError.unauthorized("Invalid refresh token");
   }
 
   return await issueTokens(user);
