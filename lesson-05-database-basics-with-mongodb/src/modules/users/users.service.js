@@ -13,6 +13,7 @@ async function getCurrentUserService(userId) {
   return {
     id: user.id,
     email: user.email,
+    username: user.username,
     role: role ? role.name : null,
     permissions: permissions.map((p) => p.code),
   };

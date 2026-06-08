@@ -8,10 +8,15 @@ async function findUserById(id) {
   return users.find((u) => u.id === id) || null;
 }
 
-async function createUser({ email, passwordHash, roleId }) {
+async function findUserByUsername(username) {
+  return users.find((u) => u.username === username) || null;
+}
+
+async function createUser({ email, username, passwordHash, roleId }) {
   const user = {
     id: getNextUserId(),
     email,
+    username,
     passwordHash,
     roleId,
     tokenVersion: 0, // why we need token version?
@@ -29,6 +34,7 @@ async function incrementTokenVersion(userId) {
 module.exports = {
   findUserByEmail,
   findUserById,
+  findUserByUsername,
   createUser,
   incrementTokenVersion,
 };

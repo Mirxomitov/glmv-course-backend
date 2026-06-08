@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const {
   findUserByEmail,
   findUserById,
+  findUserByUsername,
   createUser,
   incrementTokenVersion,
 } = require("../users/users.repository");
@@ -19,6 +20,7 @@ function signAccessToken(user, role, permissions) {
   return jwt.sign(
     {
       sub: user.id,
+      username: user.username,
       role: role.name,
       permissions: permissions.map((p) => p.code),
     },
@@ -45,18 +47,23 @@ async function issueTokens(user) {
   };
 }
 
-async function registerService({ email, password }) {
-  if (!email || !password) throw HttpError.badRequest("Email and password are required");
+async function registerService({ email, username, password }) {
+  if (!email || !username || !password) {
+    throw HttpError.badRequest("Email, username and password are required");
+  }
   if (password.length < 6) throw HttpError.badRequest("Password too short");
 
   const existing = await findUserByEmail(email);
   if (existing) throw HttpError.conflict("Email already registered");
 
+  const existingUsername = await findUserByUsername(username);
+  if (existingUsername) throw HttpError.conflict("Username already taken");
+
   const role = await findRoleByName("user");
   if (!role) throw HttpError.badRequest("Invalid role");
 
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-  const user = await createUser({ email, passwordHash, roleId: role.id });
+  const user = await createUser({ email, username, passwordHash, roleId: role.id });
 
   return await issueTokens(user);
 }

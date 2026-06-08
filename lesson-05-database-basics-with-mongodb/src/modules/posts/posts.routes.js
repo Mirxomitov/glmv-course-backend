@@ -1,0 +1,26 @@
+const express = require("express");
+
+const { listPostsController, publishPostController } = require("./posts.controller");
+
+const {
+  authGuard,
+  permissionGuard,
+} = require("../shared/middlewares/middleware");
+
+const router = express.Router();
+
+router.get(
+  "/posts",
+  authGuard,
+  permissionGuard("posts.read"),
+  listPostsController
+);
+
+router.post(
+  "/publish",
+  authGuard,
+  permissionGuard("posts.write"),
+  publishPostController
+);
+
+module.exports = router;
