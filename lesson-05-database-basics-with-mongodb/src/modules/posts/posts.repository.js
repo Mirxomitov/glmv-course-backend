@@ -1,9 +1,14 @@
 const Post = require("./post.model");
 
+// Author fields we expose when joining the User doc onto a post.
+const AUTHOR_FIELDS = "username";
+
 async function getAllPosts() {
-  return Post.find().sort({ createdAt: -1 });
+  return Post.find().sort({ createdAt: -1 }).populate("author", AUTHOR_FIELDS);
 }
 
+// No populate here on purpose: this is the internal lookup used for ownership
+// checks (post.authorId.equals(userId)), which needs authorId to stay an ObjectId.
 async function findPostById(id) {
   return Post.findById(id);
 }
@@ -28,12 +33,14 @@ async function unlikePost(postId, userId) {
 }
 
 async function publishPost({ title, content, authorId, categoryIds }) {
-  return Post.create({
+  const post = await Post.create({
     title,
     content,
     authorId,
     categoryIds,
   });
+  // Return the created post with its author joined, to match the read shape.
+  return post.populate("author", AUTHOR_FIELDS);
 }
 
 // Applies a whitelisted set of changes. Returns the updated document, or null
@@ -43,7 +50,7 @@ async function editPost(postId, update) {
     postId,
     { $set: update },
     { new: true, runValidators: true }
-  );
+  ).populate("author", AUTHOR_FIELDS);
 }
 
 module.exports = {
