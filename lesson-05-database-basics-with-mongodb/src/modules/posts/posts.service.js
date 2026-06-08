@@ -5,6 +5,7 @@ const {
   likePost,
   unlikePost,
 } = require("./posts.repository");
+const { findCategoriesByIds } = require("../categories/categories.repository");
 const { HttpError } = require("../shared/errors/http-error");
 
 async function listPostsService() {
@@ -12,7 +13,18 @@ async function listPostsService() {
 }
 
 async function publishPostService(post) {
-  return await publishPost(post);
+  const categoryIds = post.categoryIds || [];
+
+  if (categoryIds.length > 0) {
+    const found = await findCategoriesByIds(categoryIds);
+    const foundIds = new Set(found.map((c) => c.id));
+    const allExist = categoryIds.every((id) => foundIds.has(id));
+    if (!allExist) {
+      throw HttpError.badRequest("One or more categories do not exist");
+    }
+  }
+
+  return await publishPost({ ...post, categoryIds });
 }
 
 function likeSummary(post, userId) {

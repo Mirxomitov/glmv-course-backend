@@ -8,6 +8,7 @@ const { rolesRouter } = require("./modules/roles/roles.module");
 const { permissionsRouter } = require("./modules/permissions/permissions.module");
 const { postsRouter } = require("./modules/posts/posts.module");
 const { commentsRouter } = require("./modules/comments/comments.module");
+const { categoriesRouter } = require("./modules/categories/categories.module");
 
 const {
   jsonParser,
@@ -26,6 +27,7 @@ app.use(rolesRouter);
 app.use(permissionsRouter);
 app.use(postsRouter);
 app.use(commentsRouter);
+app.use(categoriesRouter);
 
 app.use(errorHandler);
 

@@ -6,6 +6,7 @@ class Post {
     authorId,
     createdAt,
     likedBy = [],
+    categoryIds = [],
   }) {
     this.id = id;
     this.title = title;
@@ -13,6 +14,7 @@ class Post {
     this.authorId = authorId;
     this.createdAt = createdAt;
     this.likedBy = likedBy;
+    this.categoryIds = categoryIds;
   }
 }
 

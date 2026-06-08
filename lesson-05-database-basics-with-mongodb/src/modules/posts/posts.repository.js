@@ -21,13 +21,14 @@ async function unlikePost(post, userId) {
   return post;
 }
 
-async function publishPost({ title, content, authorId }) {
+async function publishPost({ title, content, authorId, categoryIds }) {
   const post = new Post({
     id: getNextPostId(),
     title,
     content,
     authorId,
     createdAt: new Date().toISOString(),
+    categoryIds,
   });
 
   posts.push(post);
