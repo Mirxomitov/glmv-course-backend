@@ -28,5 +28,4 @@ postSchema.virtual("author", {
 // Hide the raw `authorId` from responses — clients use the populated `author`
 // object instead. The field is still stored in Mongo and used internally.
 postSchema.set("toJSON", toJSONConfig("authorId"));
-
 module.exports = mongoose.model("Post", postSchema);
