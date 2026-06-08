@@ -11,9 +11,13 @@ function parsePostId(req) {
   return postId;
 }
 
-async function listPostsController(req, res) {
-  const posts = await listPostsService(req.user.sub);
-  return res.status(200).json({ message: "ok", data: posts });
+async function listPostsController(req, res, next) {
+  try {
+    const posts = await listPostsService();
+    return res.status(200).json({ message: "ok", data: posts });
+  } catch (error) {
+    return next(error);
+  }
 }
 
 async function publishPostController(req, res, next) {

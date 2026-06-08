@@ -1,4 +1,4 @@
-const { users, getNextUserId } = require("../shared/db/db");
+const { users, posts, getNextUserId } = require("../shared/db/db");
 
 async function findUserByEmail(email) {
   return users.find((u) => u.email === email) || null;
@@ -25,6 +25,10 @@ async function createUser({ email, username, passwordHash, roleId }) {
   return user;
 }
 
+async function getUserPosts(userId) {
+  return posts.filter((p) => p.authorId === userId);
+}
+
 async function incrementTokenVersion(userId) {
   const user = users.find((u) => u.id === userId);
   if (user) user.tokenVersion += 1;
@@ -36,5 +40,6 @@ module.exports = {
   findUserById,
   findUserByUsername,
   createUser,
-  incrementTokenVersion,
+  getUserPosts,
+  incrementTokenVersion
 };

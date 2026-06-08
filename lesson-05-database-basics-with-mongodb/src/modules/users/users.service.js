@@ -1,4 +1,4 @@
-const { findUserById } = require("./users.repository");
+const { findUserById, getUserPosts } = require("./users.repository");
 const { findRoleById } = require("../roles/roles.repository");
 const { findPermissionsByIds } = require("../permissions/permissions.repository");
 const { HttpError } = require("../shared/errors/http-error");
@@ -19,6 +19,15 @@ async function getCurrentUserService(userId) {
   };
 }
 
+
+async function getUserPostsService(userId) {
+  const user = await findUserById(userId);
+  if (!user) throw HttpError.notFound("User not found");
+
+  return await getUserPosts(userId);
+}
+
 module.exports = {
   getCurrentUserService,
+  getUserPostsService
 };

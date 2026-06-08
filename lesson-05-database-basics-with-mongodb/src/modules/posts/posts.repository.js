@@ -1,8 +1,8 @@
 const { posts, getNextPostId } = require("../shared/db/db");
 const Post = require("./post.model");
 
-async function getAllPosts(authorId) {
-  return posts.filter((p) => p.authorId === authorId);
+async function getAllPosts() {
+  return posts;
 }
 
 async function findPostById(id) {

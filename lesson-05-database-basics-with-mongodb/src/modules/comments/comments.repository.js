@@ -4,7 +4,7 @@ const Comment = require("./comment.model");
 async function getCommentsByPostId(postId) {
   return comments
     .filter((c) => c.postId === postId)
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.id - a.id);
 }
 
 async function createComment({ postId, authorId, username, body }) {

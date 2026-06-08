@@ -13,7 +13,7 @@ async function listPostsService() {
 }
 
 async function publishPostService(post) {
-  const categoryIds = post.categoryIds || [];
+  const categoryIds = [...new Set(post.categoryIds || [])];
 
   if (categoryIds.length > 0) {
     const found = await findCategoriesByIds(categoryIds);
