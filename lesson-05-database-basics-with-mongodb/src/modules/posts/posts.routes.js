@@ -4,6 +4,7 @@ const {
   listPostsController,
   publishPostController,
   toggleLikeController,
+  editPostController,
 } = require("./posts.controller");
 
 const {
@@ -25,6 +26,13 @@ router.post(
   authGuard,
   permissionGuard("posts.write"),
   publishPostController
+);
+
+router.patch(
+  "/posts/:postId",
+  authGuard,
+  permissionGuard("posts.write"),
+  editPostController
 );
 
 router.post(

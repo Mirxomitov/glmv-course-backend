@@ -36,10 +36,21 @@ async function publishPost({ title, content, authorId, categoryIds }) {
   });
 }
 
+// Applies a whitelisted set of changes. Returns the updated document, or null
+// if the post no longer exists. `runValidators` keeps schema rules enforced.
+async function editPost(postId, update) {
+  return Post.findByIdAndUpdate(
+    postId,
+    { $set: update },
+    { new: true, runValidators: true }
+  );
+}
+
 module.exports = {
   getAllPosts,
   findPostById,
   publishPost,
   likePost,
   unlikePost,
+  editPost,
 };
