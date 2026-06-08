@@ -27,11 +27,15 @@ async function publishPostService(post) {
   return await publishPost({ ...post, categoryIds });
 }
 
+function hasLiked(post, userId) {
+  return post.likedBy.some((id) => id.equals(userId));
+}
+
 function likeSummary(post, userId) {
   return {
     postId: post.id,
     likeCount: post.likedBy.length,
-    liked: post.likedBy.includes(userId),
+    liked: hasLiked(post, userId),
   };
 }
 
@@ -39,13 +43,16 @@ async function toggleLikeService(postId, userId) {
   const post = await findPostById(postId);
   if (!post) throw HttpError.notFound("Post not found");
 
-  if (post.likedBy.includes(userId)) {
-    await unlikePost(post, userId);
-  } else {
-    await likePost(post, userId);
-  }
+  // Decide direction from the current state, then apply an atomic write.
+  // The returned document reflects the post-update state (`new: true`).
+  const updated = hasLiked(post, userId)
+    ? await unlikePost(postId, userId)
+    : await likePost(postId, userId);
 
-  return likeSummary(post, userId);
+  // The post may have been removed between the read and the write.
+  if (!updated) throw HttpError.notFound("Post not found");
+
+  return likeSummary(updated, userId);
 }
 
 module.exports = {

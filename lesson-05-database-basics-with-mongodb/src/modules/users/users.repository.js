@@ -1,38 +1,38 @@
-const { users, posts, getNextUserId } = require("../shared/db/db");
+const User = require("./users.model");
+const Post = require("../posts/post.model");
 
 async function findUserByEmail(email) {
-  return users.find((u) => u.email === email) || null;
+  return User.findOne({ email });
 }
 
 async function findUserById(id) {
-  return users.find((u) => u.id === id) || null;
+  return User.findById(id);
 }
 
 async function findUserByUsername(username) {
-  return users.find((u) => u.username === username) || null;
+  return User.findOne({ username });
 }
 
 async function createUser({ email, username, passwordHash, roleId }) {
-  const user = {
-    id: getNextUserId(),
+  return User.create({
     email,
     username,
     passwordHash,
     roleId,
-    tokenVersion: 0, // why we need token version?
-  };
-  users.push(user);
-  return user;
+    tokenVersion: 0,
+  });
 }
 
 async function getUserPosts(userId) {
-  return posts.filter((p) => p.authorId === userId);
+  return Post.find({ authorId: userId }).sort({ createdAt: -1 });
 }
 
 async function incrementTokenVersion(userId) {
-  const user = users.find((u) => u.id === userId);
-  if (user) user.tokenVersion += 1;
-  return user;
+  return User.findByIdAndUpdate(
+    userId,
+    { $inc: { tokenVersion: 1 } },
+    { new: true }
+  );
 }
 
 module.exports = {
@@ -41,5 +41,5 @@ module.exports = {
   findUserByUsername,
   createUser,
   getUserPosts,
-  incrementTokenVersion
+  incrementTokenVersion,
 };

@@ -1,15 +1,15 @@
-const { roles } = require("../shared/db/db");
+const Role = require("./role.model");
 
 async function getAllRoles() {
-  return roles;
+  return Role.find();
 }
 
 async function findRoleById(id) {
-  return roles.find((r) => r.id === id) || null;
+  return Role.findById(id);
 }
 
 async function findRoleByName(name) {
-  return roles.find((r) => r.name === name) || null;
+  return Role.findOne({ name });
 }
 
 module.exports = {

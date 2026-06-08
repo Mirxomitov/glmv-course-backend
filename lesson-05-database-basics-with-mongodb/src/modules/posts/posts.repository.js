@@ -1,38 +1,39 @@
-const { posts, getNextPostId } = require("../shared/db/db");
 const Post = require("./post.model");
 
 async function getAllPosts() {
-  return posts;
+  return Post.find().sort({ createdAt: -1 });
 }
 
 async function findPostById(id) {
-  return posts.find((p) => p.id === id) || null;
+  return Post.findById(id);
 }
 
-async function likePost(post, userId) {
-  if (!post.likedBy.includes(userId)) {
-    post.likedBy.push(userId);
-  }
-  return post;
+// Atomic, race-safe like: $addToSet adds the user only if absent (no manual
+// dedup needed). Returns the updated document, or null if the post is gone.
+async function likePost(postId, userId) {
+  return Post.findByIdAndUpdate(
+    postId,
+    { $addToSet: { likedBy: userId } },
+    { new: true }
+  );
 }
 
-async function unlikePost(post, userId) {
-  post.likedBy = post.likedBy.filter((id) => id !== userId);
-  return post;
+// Atomic, race-safe unlike: $pull removes the user in a single server-side op.
+async function unlikePost(postId, userId) {
+  return Post.findByIdAndUpdate(
+    postId,
+    { $pull: { likedBy: userId } },
+    { new: true }
+  );
 }
 
 async function publishPost({ title, content, authorId, categoryIds }) {
-  const post = new Post({
-    id: getNextPostId(),
+  return Post.create({
     title,
     content,
     authorId,
-    createdAt: new Date().toISOString(),
     categoryIds,
   });
-
-  posts.push(post);
-  return post;
 }
 
 module.exports = {

@@ -1,11 +1,11 @@
-const { permissions } = require("../shared/db/db");
+const Permission = require("./permission.model");
 
 async function getAllPermissions() {
-  return permissions;
+  return Permission.find();
 }
 
 async function findPermissionsByIds(ids) {
-  return permissions.filter((p) => ids.includes(p.id));
+  return Permission.find({ _id: { $in: ids } });
 }
 
 module.exports = {

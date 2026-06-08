@@ -1,5 +1,5 @@
 const { getCurrentUserService, getUserPostsService } = require("./users.service");
-const { HttpError } = require("../shared/errors/http-error");
+const { parseObjectId } = require("../shared/db/object-id");
 
 async function getMeController(req, res, next) {
   try {
@@ -12,8 +12,7 @@ async function getMeController(req, res, next) {
 
 async function getUserPostsController(req, res, next) {
   try {
-    const userId = Number(req.params.userId);
-    if (!Number.isInteger(userId)) throw HttpError.badRequest("Invalid user id");
+    const userId = parseObjectId(req.params.userId, "user id");
 
     const posts = await getUserPostsService(userId);
     return res.status(200).json({ message: "ok", data: posts });

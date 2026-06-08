@@ -1,21 +1,21 @@
-class Post {
-  constructor({
-    id,
-    title,
-    content,
-    authorId,
-    createdAt,
-    likedBy = [],
-    categoryIds = [],
-  }) {
-    this.id = id;
-    this.title = title;
-    this.content = content;
-    this.authorId = authorId;
-    this.createdAt = createdAt;
-    this.likedBy = likedBy;
-    this.categoryIds = categoryIds;
-  }
-}
+const mongoose = require("mongoose");
+const { toJSONConfig } = require("../shared/db/to-json");
 
-module.exports = Post;
+const postSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    authorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    categoryIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
+  },
+  { timestamps: true }
+);
+
+postSchema.set("toJSON", toJSONConfig());
+
+module.exports = mongoose.model("Post", postSchema);

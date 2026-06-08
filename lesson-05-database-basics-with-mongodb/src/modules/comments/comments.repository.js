@@ -1,24 +1,16 @@
-const { comments, getNextCommentId } = require("../shared/db/db");
 const Comment = require("./comment.model");
 
 async function getCommentsByPostId(postId) {
-  return comments
-    .filter((c) => c.postId === postId)
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.id - a.id);
+  return Comment.find({ postId }).sort({ createdAt: -1 });
 }
 
 async function createComment({ postId, authorId, username, body }) {
-  const comment = new Comment({
-    id: getNextCommentId(),
+  return Comment.create({
     postId,
     authorId,
     username,
     body,
-    createdAt: new Date().toISOString(),
   });
-
-  comments.push(comment);
-  return comment;
 }
 
 module.exports = {

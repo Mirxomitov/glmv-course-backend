@@ -1,10 +1,9 @@
 const { listCommentsService, addCommentService } = require("./comments.service");
 const { HttpError } = require("../shared/errors/http-error");
+const { parseObjectId } = require("../shared/db/object-id");
 
 function parsePostId(req) {
-  const postId = Number(req.params.postId);
-  if (!Number.isInteger(postId)) throw HttpError.badRequest("Invalid post id");
-  return postId;
+  return parseObjectId(req.params.postId, "post id");
 }
 
 async function listCommentsController(req, res, next) {

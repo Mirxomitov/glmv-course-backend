@@ -1,11 +1,11 @@
-const { categories } = require("../shared/db/db");
+const Category = require("./category.model");
 
 async function getAllCategories() {
-  return categories;
+  return Category.find();
 }
 
 async function findCategoriesByIds(ids) {
-  return categories.filter((c) => ids.includes(c.id));
+  return Category.find({ _id: { $in: ids } });
 }
 
 module.exports = {

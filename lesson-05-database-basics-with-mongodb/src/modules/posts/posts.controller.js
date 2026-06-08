@@ -4,11 +4,10 @@ const {
   toggleLikeService,
 } = require("./posts.service");
 const { HttpError } = require("../shared/errors/http-error");
+const { parseObjectId, isValidObjectId } = require("../shared/db/object-id");
 
 function parsePostId(req) {
-  const postId = Number(req.params.postId);
-  if (!Number.isInteger(postId)) throw HttpError.badRequest("Invalid post id");
-  return postId;
+  return parseObjectId(req.params.postId, "post id");
 }
 
 async function listPostsController(req, res, next) {
@@ -34,9 +33,9 @@ async function publishPostController(req, res, next) {
     if (
       categoryIds !== undefined &&
       (!Array.isArray(categoryIds) ||
-        !categoryIds.every((id) => Number.isInteger(id)))
+        !categoryIds.every((id) => isValidObjectId(id)))
     ) {
-      throw HttpError.badRequest("categoryIds must be an array of integers");
+      throw HttpError.badRequest("categoryIds must be an array of valid ids");
     }
 
     const post = await publishPostService({
