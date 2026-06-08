@@ -5,6 +5,22 @@ async function getAllPosts(authorId) {
   return posts.filter((p) => p.authorId === authorId);
 }
 
+async function findPostById(id) {
+  return posts.find((p) => p.id === id) || null;
+}
+
+async function likePost(post, userId) {
+  if (!post.likedBy.includes(userId)) {
+    post.likedBy.push(userId);
+  }
+  return post;
+}
+
+async function unlikePost(post, userId) {
+  post.likedBy = post.likedBy.filter((id) => id !== userId);
+  return post;
+}
+
 async function publishPost({ title, content, authorId }) {
   const post = new Post({
     id: getNextPostId(),
@@ -20,5 +36,8 @@ async function publishPost({ title, content, authorId }) {
 
 module.exports = {
   getAllPosts,
+  findPostById,
   publishPost,
+  likePost,
+  unlikePost,
 };

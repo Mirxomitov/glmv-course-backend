@@ -1,6 +1,10 @@
 const express = require("express");
 
-const { listPostsController, publishPostController } = require("./posts.controller");
+const {
+  listPostsController,
+  publishPostController,
+  toggleLikeController,
+} = require("./posts.controller");
 
 const {
   authGuard,
@@ -21,6 +25,13 @@ router.post(
   authGuard,
   permissionGuard("posts.write"),
   publishPostController
+);
+
+router.post(
+  "/posts/:postId/like",
+  authGuard,
+  permissionGuard("posts.read"),
+  toggleLikeController
 );
 
 module.exports = router;
