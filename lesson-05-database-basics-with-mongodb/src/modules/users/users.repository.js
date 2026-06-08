@@ -24,7 +24,9 @@ async function createUser({ email, username, passwordHash, roleId }) {
 }
 
 async function getUserPosts(userId) {
-  return Post.find({ authorId: userId }).sort({ createdAt: -1 });
+  return Post.find({ authorId: userId })
+    .sort({ createdAt: -1 })
+    .populate("author", "username");
 }
 
 async function incrementTokenVersion(userId) {

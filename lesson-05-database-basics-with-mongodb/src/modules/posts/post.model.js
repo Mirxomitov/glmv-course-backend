@@ -16,6 +16,17 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-postSchema.set("toJSON", toJSONConfig());
+// Read-only join: `authorId` stays the stored ObjectId; `author` is populated on
+// demand (.populate("author")) into the matching User. Nothing extra is stored.
+postSchema.virtual("author", {
+  ref: "User",
+  localField: "authorId",
+  foreignField: "_id",
+  justOne: true,
+});
+
+// Hide the raw `authorId` from responses — clients use the populated `author`
+// object instead. The field is still stored in Mongo and used internally.
+postSchema.set("toJSON", toJSONConfig("authorId"));
 
 module.exports = mongoose.model("Post", postSchema);

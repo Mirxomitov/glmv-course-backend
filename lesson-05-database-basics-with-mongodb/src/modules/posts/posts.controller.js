@@ -11,8 +11,6 @@ function parsePostId(req) {
   return parseObjectId(req.params.postId, "post id");
 }
 
-// Transport-level shape check for categoryIds (well-formed ids only).
-// Whether they *exist* is a business rule handled in the service.
 function assertCategoryIdsShape(categoryIds) {
   if (categoryIds === undefined) return;
   if (
@@ -36,7 +34,6 @@ async function publishPostController(req, res, next) {
   try {
     const { title, content, categoryIds } = req.body;
 
-    // Create requires both fields.
     if (typeof title !== "string" || typeof content !== "string") {
       throw HttpError.badRequest("Invalid post data");
     }
@@ -60,8 +57,6 @@ async function editPostController(req, res, next) {
     const postId = parsePostId(req);
     const { title, content, categoryIds } = req.body;
 
-    // PATCH is partial: each field is optional, but must be the right type
-    // when present.
     if (title !== undefined && typeof title !== "string") {
       throw HttpError.badRequest("title must be a string");
     }
