@@ -1,0 +1,67 @@
+### Course Booking API
+
+### 1. Create a user
+# @name user1
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "fullName": "User 2",
+  "balance": 100000
+}
+
+### 2. Create another user
+# @name user2
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "fullName": "Vali Aliyev",
+  "balance": 100000
+}
+
+### 3. Create a course
+# @name course
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+  "title": "Frontend Advanced",
+  "price": 50000,
+  "seatsLeft": 2
+}
+
+### 4. Race condition demo course (only 1 seat)
+# @name raceCourse
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+  "title": "React Native Bootcamp",
+  "price": 50000,
+  "seatsLeft": 1
+}
+
+### 5. Buy course (user1)
+POST http://localhost:3000/courses/{{course.response.body.data.id}}/buy
+Content-Type: application/json
+
+{
+  "userId": "{{user1.response.body.data.id}}"
+}
+
+### 6. Buy the 1-seat course (user1) -> should succeed
+POST http://localhost:3000/courses/{{raceCourse.response.body.data.id}}/buy
+Content-Type: application/json
+
+{
+  "userId": "{{user1.response.body.data.id}}"
+}
+
+### 7. Buy the 1-seat course again (user2) -> "No seats left"
+POST http://localhost:3000/courses/{{raceCourse.response.body.data.id}}/buy
+Content-Type: application/json
+
+{
+  "userId": "{{user2.response.body.data.id}}"
+}
