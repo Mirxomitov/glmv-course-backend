@@ -11,6 +11,14 @@ async function createCourseService({ title, price, seatsLeft }) {
   return Course.create({ title, price, seatsLeft });
 }
 
+// READ-ONLY listing. This data tolerates being a few ms stale, so we opt this
+// single query into reading from a secondary with read preference
+// "secondaryPreferred" (use a secondary if one is available, otherwise fall
+// back to the primary). The purchase logic stays on the primary untouched.
+async function listCoursesService() {
+  return Course.find().read("secondaryPreferred");
+}
+
 // SIMPLE (UNSAFE) version — kept for comparison only.
 // Read -> check -> write in separate steps. Two parallel requests can both
 // read seatsLeft = 1 before either writes 0, so both succeed (oversell).
@@ -101,6 +109,7 @@ async function buyCourseService({ courseId, userId }) {
 
 module.exports = {
   createCourseService,
+  listCoursesService,
   buyCourseService,
   buyCourseServiceUnsafe,
 };

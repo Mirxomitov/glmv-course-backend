@@ -1,4 +1,8 @@
-const { createCourseService, buyCourseService } = require("./courses.service");
+const {
+  createCourseService,
+  listCoursesService,
+  buyCourseService,
+} = require("./courses.service");
 const { parseObjectId } = require("../shared/db/object-id");
 
 async function createCourseController(req, res, next) {
@@ -7,6 +11,15 @@ async function createCourseController(req, res, next) {
 
     const course = await createCourseService({ title, price, seatsLeft });
     return res.status(201).json({ message: "ok", data: course });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function listCoursesController(req, res, next) {
+  try {
+    const courses = await listCoursesService();
+    return res.status(200).json({ message: "ok", data: courses });
   } catch (error) {
     return next(error);
   }
@@ -26,5 +39,6 @@ async function buyCourseController(req, res, next) {
 
 module.exports = {
   createCourseController,
+  listCoursesController,
   buyCourseController,
 };
